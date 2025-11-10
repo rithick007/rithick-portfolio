@@ -8,7 +8,9 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setHasShadow(window.scrollY > 5);
+    const handleScroll = () => {
+      setHasShadow(window.scrollY > 5);
+    };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -31,10 +33,9 @@ export default function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
       className={`
-        fixed top-0 left-0 w-full z-50 px-5 lg:px-28 p-5
-        ${isOpen ? "bg-white" : "bg-white/40 backdrop-blur-md"}
-        supports-[backdrop-filter]:${isOpen ? "bg-white" : "bg-white/40"}
+        fixed top-0 left-0 w-full z-50 px-5 lg:px-28 p-5 
         transition-all duration-300
+        ${isOpen ? "forced-solid" : "bg-white/40 backdrop-blur-md"}
         ${hasShadow ? "lg:shadow-md" : "lg:shadow-none"}
       `}
       style={{
@@ -63,13 +64,13 @@ export default function Navbar() {
           className="hidden lg:inline-block relative px-4 py-2 font-medium group"
         >
           <span className="absolute inset-0 bg-black translate-x-1 translate-y-1 transition group-hover:translate-x-0 group-hover:translate-y-0"></span>
-          <span className="absolute inset-0 bg-white border-2 border-black group-hover:bg-black transition"></span>
+          <span className="absolute inset-0 bg-white border-2 border-black transition group-hover:bg-black"></span>
           <span className="relative text-black group-hover:text-white flex items-center gap-x-3">
             Resume <TbDownload size={16} />
           </span>
         </motion.a>
 
-        {/* ✅ Mobile Menu Button */}
+        {/* ✅ Mobile Menu Icon */}
         <motion.button
           className="lg:hidden text-3xl"
           onClick={() => setIsOpen(!isOpen)}
@@ -79,14 +80,14 @@ export default function Navbar() {
         </motion.button>
       </div>
 
-      {/* ✅ Mobile Menu */}
+      {/* ✅ Mobile Sidebar */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ y: "-100%" }}
             animate={{ y: 0 }}
             exit={{ y: "-100%" }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.25 }}
             className="lg:hidden fixed top-0 left-0 w-full h-full bg-white z-50"
           >
             <button
