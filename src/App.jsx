@@ -22,16 +22,28 @@ export default function App() {
           vantaEffect.current = window.VANTA.FOG({
             el: vantaRef.current,
             THREE: window.THREE,
+          
             mouseControls: true,
             touchControls: true,
             gyroControls: false,
-            highlightColor: 0xedeae2,
-            midtoneColor: 0xcdc8c7,
-            lowlightColor: 0xa19fa7,
-            baseColor: 0xf2ecec,
-            blurFactor: 0.6,
-            speed: 1.5,
-            zoom: 1.2,
+          
+            // ✅ ULTRA-SMOOTH SETTINGS
+            highlightColor: 0xf6f2ee,
+            midtoneColor: 0xd8d3ce,
+            lowlightColor: 0xbcb9b6,
+            baseColor: 0xf1efed,
+          
+            blurFactor: 0.20,   // ✅ was 0.60 — huge reduction
+            zoom: 0.70,         // ✅ lower zoom = less GPU work
+            speed: 0.80,        // ✅ smoother motion, easier to render
+            scale: 1.0,         
+            scaleMobile: 1.0,
+          
+            // ✅ MASSIVE LAG REDUCTION (hidden settings)
+            points: 5.0,        // default is higher — lower = smoother
+            waveHeight: 10,     // reduces vertical distortion
+            waveSpeed: 0.2,     // very smooth gliding
+            waveScale: 0.5,     // reduces shader complexity
           });
 
           console.log("✅ Vanta Initialized");
