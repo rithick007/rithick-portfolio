@@ -1,0 +1,16 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g transform="scale(0.75) translate(85,60)">
+<path d="M61.4 239.9C69.5 230.8 84.1 219.8 99.9 217.9C111.8 216.5 122.9 220.8 133.7 226.8C146.3 233.9 160.1 243.8 174.9 244.4C192.7 245.2 209.3 236.2 224.2 224.6C239.1 212.9 252.3 198.3 267.6 187.4C282.4 176.8 299.2 169.7 316.5 169.3C336.5 168.8 355.6 178 372.1 189.7C388.6 201.3 402.6 215.7 416.6 230C426.4 240.2 437 249.7 448.4 257.8" stroke="url(#grad1)" stroke-width="18" stroke-linecap="round"/>
+<text x="50%" y="92%" text-anchor="middle" font-family="Arial, sans-serif" font-size="90" font-weight="700" fill="#004A8F">SAINT-GOBAIN</text>
+</g>
+
+<defs>
+<linearGradient id="grad1" x1="0" y1="0" x2="512" y2="0" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#0F89CA"/>
+<stop offset="0.4" stop-color="#6A4DA0"/>
+<stop offset="0.7" stop-color="#E84A5F"/>
+<stop offset="1" stop-color="#F79E1B"/>
+</linearGradient>
+</defs>
+</svg>
+
