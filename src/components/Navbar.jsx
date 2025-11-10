@@ -8,9 +8,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setHasShadow(window.scrollY > 5);
-    };
+    const handleScroll = () => setHasShadow(window.scrollY > 5);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -33,17 +31,18 @@ export default function Navbar() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
       className={`
-        fixed top-0 left-0 w-full z-[999] px-5 lg:px-28 p-5
-        ${hasShadow ? "bg-white/90 shadow-md" : "bg-white/60"}
-        backdrop-blur-xl
+        fixed top-0 left-0 w-full z-50 px-5 lg:px-28 p-5
+        ${isOpen ? "bg-white" : "bg-white/40 backdrop-blur-md"}
+        supports-[backdrop-filter]:${isOpen ? "bg-white" : "bg-white/40"}
         transition-all duration-300
+        ${hasShadow ? "lg:shadow-md" : "lg:shadow-none"}
       `}
       style={{
-        WebkitBackdropFilter: "blur(14px)",
-        backdropFilter: "blur(14px)",
+        WebkitBackdropFilter: isOpen ? "none" : "blur(12px)",
+        backdropFilter: isOpen ? "none" : "blur(12px)",
       }}
     >
-      <div className="w-full flex justify-between items-center">
+      <div className="container mx-auto flex justify-between items-center">
 
         {/* ✅ Desktop Menu */}
         <ul className="hidden lg:flex items-center gap-x-7 font-semibold">
@@ -63,14 +62,14 @@ export default function Navbar() {
           download="Rithick-Resume.pdf"
           className="hidden lg:inline-block relative px-4 py-2 font-medium group"
         >
-          <span className="absolute inset-0 bg-black translate-x-1 translate-y-1 group-hover:translate-x-0 group-hover:translate-y-0 transition" />
-          <span className="absolute inset-0 bg-white border-2 border-black group-hover:bg-black transition" />
+          <span className="absolute inset-0 bg-black translate-x-1 translate-y-1 transition group-hover:translate-x-0 group-hover:translate-y-0"></span>
+          <span className="absolute inset-0 bg-white border-2 border-black group-hover:bg-black transition"></span>
           <span className="relative text-black group-hover:text-white flex items-center gap-x-3">
             Resume <TbDownload size={16} />
           </span>
         </motion.a>
 
-        {/* ✅ Mobile Hamburger */}
+        {/* ✅ Mobile Menu Button */}
         <motion.button
           className="lg:hidden text-3xl"
           onClick={() => setIsOpen(!isOpen)}
@@ -88,17 +87,8 @@ export default function Navbar() {
             animate={{ y: 0 }}
             exit={{ y: "-100%" }}
             transition={{ duration: 0.3 }}
-            className="
-              lg:hidden fixed top-0 left-0 h-full w-full
-              bg-white/95 backdrop-blur-2xl 
-              z-[9999] shadow-xl
-            "
-            style={{
-              WebkitBackdropFilter: "blur(20px)",
-              backdropFilter: "blur(20px)",
-            }}
+            className="lg:hidden fixed top-0 left-0 w-full h-full bg-white z-50"
           >
-            {/* Close button */}
             <button
               className="absolute top-5 right-5 text-3xl"
               onClick={() => setIsOpen(false)}
@@ -122,8 +112,8 @@ export default function Navbar() {
                 whileHover={{ scale: 1.1 }}
                 className="relative inline-block px-4 py-2 font-semibold group mt-5"
               >
-                <span className="absolute inset-0 bg-black translate-x-1 translate-y-1 transition group-hover:translate-x-0 group-hover:translate-y-0" />
-                <span className="absolute inset-0 bg-white border-2 border-black group-hover:bg-black transition" />
+                <span className="absolute inset-0 bg-black translate-x-1 translate-y-1 transition group-hover:translate-x-0 group-hover:translate-y-0"></span>
+                <span className="absolute inset-0 bg-white border-2 border-black group-hover:bg-black transition"></span>
                 <span className="relative text-black group-hover:text-white flex items-center gap-x-3">
                   Resume <TbDownload size={16} />
                 </span>
