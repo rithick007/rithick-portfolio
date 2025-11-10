@@ -4,12 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ✅ Smooth scrolling across all devices */
+/* ✅ Smooth scrolling everywhere */
 html {
   scroll-behavior: smooth;
 }
 
-/* ✅ Fix white-flash when scrolling on mobile */
+/* ✅ Prevent white flash + mobile scroll-jank */
 body {
   background: transparent;
   overflow-x: hidden;
@@ -17,12 +17,20 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ✅ Improve Vanta.js blending with UI */
+/* ✅ Ensures Vanta never overlaps UI */
+#vanta-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -9999;
+  pointer-events: none;
+}
+
+/* ✅ Root stays transparent for Vanta */
 #root {
   background: transparent !important;
 }
 
-/* ✅ Android fallback for backdrop-blur */
+/* ✅ Android fallback if backdrop-blur is missing */
 @supports not ((backdrop-filter: blur(4px))) {
   .fallback-blur {
     background-color: rgba(255, 255, 255, 0.97) !important;
