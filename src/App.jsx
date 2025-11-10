@@ -13,26 +13,11 @@ export default function App() {
 
   useEffect(() => {
     let attempts = 0;
-    let resizeListenerAdded = false;
 
-    function syncVantaHeight() {
-      if (!vantaRef.current || !vantaEffect.current) return;
-
-      const fullHeight = document.documentElement.scrollHeight;
-      vantaRef.current.style.height = `${fullHeight}px`;
-
-      // prevent unnecessary constant resizing
-      if (vantaEffect.current.resize) {
-        vantaEffect.current.resize();
-      }
-    }
-
-    function tryInitVanta() {
+    function initVanta() {
       attempts++;
 
       if (window.VANTA && window.THREE && vantaRef.current) {
-        console.log("✅ Vanta Ready — Initializing");
-
         try {
           vantaEffect.current = window.VANTA.FOG({
             el: vantaRef.current,
@@ -40,8 +25,6 @@ export default function App() {
             mouseControls: true,
             touchControls: true,
             gyroControls: false,
-            minHeight: 200.0,
-            minWidth: 200.0,
             highlightColor: 0xedeae2,
             midtoneColor: 0xcdc8c7,
             lowlightColor: 0xa19fa7,
@@ -53,17 +36,13 @@ export default function App() {
 
           console.log("✅ Vanta Initialized");
 
-          // ✅ Fix white gap at bottom
-          syncVantaHeight();
-
-          // ✅ Ensure canvas updates on every scroll + resize
-          if (!resizeListenerAdded) {
-            resizeListenerAdded = true;
-
-            window.addEventListener("scroll", syncVantaHeight, { passive: true });
-            window.addEventListener("resize", syncVantaHeight);
-            window.addEventListener("orientationchange", syncVantaHeight);
-          }
+          // ✅ After content loads, set background height ONCE
+          setTimeout(() => {
+            if (vantaRef.current) {
+              vantaRef.current.style.height =
+                document.documentElement.scrollHeight + "px";
+            }
+          }, 300);
 
           return;
         } catch (err) {
@@ -71,37 +50,28 @@ export default function App() {
         }
       }
 
-      if (attempts < 20) {
-        setTimeout(tryInitVanta, 300);
-      } else {
-        console.warn("⚠️ Vanta failed after maximum retries");
+      if (attempts < 15) {
+        setTimeout(initVanta, 200);
       }
     }
 
-    tryInitVanta();
+    initVanta();
 
     return () => {
       if (vantaEffect.current) {
         try {
           vantaEffect.current.destroy();
-          console.log("✅ Vanta Destroyed");
-        } catch (err) {
-          console.warn("⚠️ Destroy Error:", err);
-        }
+        } catch {}
       }
-
-      window.removeEventListener("scroll", syncVantaHeight);
-      window.removeEventListener("resize", syncVantaHeight);
-      window.removeEventListener("orientationchange", syncVantaHeight);
     };
   }, []);
 
   return (
     <>
-      {/* ✅ Vanta Background */}
-      <div ref={vantaRef} className="fixed inset-0 -z-10" />
+      {/* ✅ Vanta Background (static height, no lag) */}
+      <div ref={vantaRef} className="fixed inset-0 -z-10 w-full" />
 
-      {/* ✅ Main Content */}
+      {/* ✅ Foreground Content */}
       <div className="relative z-10 font-sora scroll-smooth overflow-x-hidden">
         <Navbar />
         <Home />
