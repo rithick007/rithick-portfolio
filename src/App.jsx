@@ -13,13 +13,25 @@ export default function App() {
 
   useEffect(() => {
     let attempts = 0;
+    let resizeListenerAdded = false;
+
+    function syncVantaHeight() {
+      if (!vantaRef.current || !vantaEffect.current) return;
+
+      const fullHeight = document.documentElement.scrollHeight;
+      vantaRef.current.style.height = `${fullHeight}px`;
+
+      // prevent unnecessary constant resizing
+      if (vantaEffect.current.resize) {
+        vantaEffect.current.resize();
+      }
+    }
 
     function tryInitVanta() {
       attempts++;
 
-      // Check if scripts are fully loaded
       if (window.VANTA && window.THREE && vantaRef.current) {
-        console.log("✅ Vanta requirements ready. Initializing...");
+        console.log("✅ Vanta Ready — Initializing");
 
         try {
           vantaEffect.current = window.VANTA.FOG({
@@ -39,33 +51,48 @@ export default function App() {
             zoom: 1.2,
           });
 
-          console.log("✅ Vanta FOG Initialized Successfully");
+          console.log("✅ Vanta Initialized");
+
+          // ✅ Fix white gap at bottom
+          syncVantaHeight();
+
+          // ✅ Ensure canvas updates on every scroll + resize
+          if (!resizeListenerAdded) {
+            resizeListenerAdded = true;
+
+            window.addEventListener("scroll", syncVantaHeight, { passive: true });
+            window.addEventListener("resize", syncVantaHeight);
+            window.addEventListener("orientationchange", syncVantaHeight);
+          }
+
           return;
         } catch (err) {
           console.error("❌ Vanta Init Error:", err);
         }
       }
 
-      // If still not loaded, retry
       if (attempts < 20) {
-        setTimeout(tryInitVanta, 300); // retry every 300ms
+        setTimeout(tryInitVanta, 300);
       } else {
-        console.warn("⚠️ Vanta initialization failed after max attempts");
+        console.warn("⚠️ Vanta failed after maximum retries");
       }
     }
 
     tryInitVanta();
 
-    // Cleanup
     return () => {
       if (vantaEffect.current) {
         try {
           vantaEffect.current.destroy();
-          console.log("✅ Vanta destroyed on unmount");
+          console.log("✅ Vanta Destroyed");
         } catch (err) {
-          console.warn("⚠️ Vanta destroy error:", err);
+          console.warn("⚠️ Destroy Error:", err);
         }
       }
+
+      window.removeEventListener("scroll", syncVantaHeight);
+      window.removeEventListener("resize", syncVantaHeight);
+      window.removeEventListener("orientationchange", syncVantaHeight);
     };
   }, []);
 
@@ -74,7 +101,7 @@ export default function App() {
       {/* ✅ Vanta Background */}
       <div ref={vantaRef} className="fixed inset-0 -z-10" />
 
-      {/* ✅ Site Content */}
+      {/* ✅ Main Content */}
       <div className="relative z-10 font-sora scroll-smooth overflow-x-hidden">
         <Navbar />
         <Home />
