@@ -7,6 +7,9 @@ export default function Navbar() {
   const [hasShadow, setHasShadow] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
+  // ✅ NEW: extra state to keep navbar solid while closing
+  const [forceSolid, setForceSolid] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
       setHasShadow(window.scrollY > 5);
@@ -24,7 +27,20 @@ export default function Navbar() {
       behavior: "smooth",
     });
 
+    closeMenu();
+  };
+
+  const closeMenu = () => {
     setIsOpen(false);
+
+    // ✅ Keep navbar solid for the duration of exit animation
+    setForceSolid(true);
+    setTimeout(() => setForceSolid(false), 280); // match exit duration
+  };
+
+  const openMenu = () => {
+    setIsOpen(true);
+    setForceSolid(true);
   };
 
   return (
@@ -35,17 +51,17 @@ export default function Navbar() {
       className={`
         fixed top-0 left-0 w-full z-50 px-5 lg:px-28 p-5 
         transition-all duration-300
-        ${isOpen ? "forced-solid" : "bg-white/40 backdrop-blur-md"}
+        ${forceSolid ? "forced-solid" : "bg-white/40 backdrop-blur-md"}
         ${hasShadow ? "lg:shadow-md" : "lg:shadow-none"}
       `}
       style={{
-        WebkitBackdropFilter: isOpen ? "none" : "blur(12px)",
-        backdropFilter: isOpen ? "none" : "blur(12px)",
+        WebkitBackdropFilter: forceSolid ? "none" : "blur(12px)",
+        backdropFilter: forceSolid ? "none" : "blur(12px)",
       }}
     >
       <div className="container mx-auto flex justify-between items-center">
 
-        {/* ✅ Desktop Menu */}
+        {/* Desktop Menu */}
         <ul className="hidden lg:flex items-center gap-x-7 font-semibold">
           {["about", "skills", "projects", "contact"].map((item) => (
             <motion.li key={item} whileHover={{ scale: 1.1 }} className="group">
@@ -57,30 +73,30 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* ✅ Desktop Resume */}
+        {/* Resume */}
         <motion.a
           href="/assets/resume.pdf"
           download="Rithick-Resume.pdf"
           className="hidden lg:inline-block relative px-4 py-2 font-medium group"
         >
           <span className="absolute inset-0 bg-black translate-x-1 translate-y-1 transition group-hover:translate-x-0 group-hover:translate-y-0"></span>
-          <span className="absolute inset-0 bg-white border-2 border-black transition group-hover:bg-black"></span>
+          <span className="absolute inset-0 bg-white border-2 border-black group-hover:bg-black transition"></span>
           <span className="relative text-black group-hover:text-white flex items-center gap-x-3">
             Resume <TbDownload size={16} />
           </span>
         </motion.a>
 
-        {/* ✅ Mobile Menu Icon */}
+        {/* Mobile Menu Icon */}
         <motion.button
           className="lg:hidden text-3xl"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => (isOpen ? closeMenu() : openMenu())}
           whileHover={{ scale: 1.2 }}
         >
           {isOpen ? <HiX /> : <HiOutlineMenu />}
         </motion.button>
       </div>
 
-      {/* ✅ Mobile Sidebar */}
+      {/* Mobile Sidebar */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -92,7 +108,7 @@ export default function Navbar() {
           >
             <button
               className="absolute top-5 right-5 text-3xl"
-              onClick={() => setIsOpen(false)}
+              onClick={closeMenu}
             >
               <HiX />
             </button>
@@ -106,7 +122,6 @@ export default function Navbar() {
                 </motion.li>
               ))}
 
-              {/* ✅ Mobile Resume */}
               <motion.a
                 href="/assets/resume.pdf"
                 download="Rithick-Resume.pdf"
